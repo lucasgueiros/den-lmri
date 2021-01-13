@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\lucas\eclipse-workspace\lmri\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+4293787924.index
+3043288141.index
+2058649370.index
+1110782991.index
+3528857797.index
+3844480275.index
