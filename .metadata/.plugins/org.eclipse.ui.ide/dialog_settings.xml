@@ -6,6 +6,7 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="/data/lucas/hdd/archive/2020/2020 Estágio no Departamento de Energia Nuclear/lmri/restapi"/>
 			<item value="C:\Users\lucas\eclipse-workspace\abnt2csv"/>
 			<item value="C:\Users\lucas\eclipse-workspace\htmltocsv"/>
 			<item value="C:\Users\lucas\eclipse-workspace\lmri\restapi"/>

@@ -8,7 +8,13 @@ class Cliente extends React.Component {
   render () {
     let endereco = '';
     if(this.props.entity._links) {
-      endereco = <Viewer url={this.props.entity._links.endereco.href || ''} entityComponent={Endereco} entityName="endereco"/>;
+      endereco = <Viewer
+        key={this.props.entity._links.endereco.href}
+        url={this.props.entity._links.endereco.href}
+        entityComponent={Endereco}
+        entityName="endereco"
+        editing={this.props.editing}
+        creating={this.props.creating} />;
     }
 
 
@@ -17,23 +23,23 @@ class Cliente extends React.Component {
         <form>
           <div>
             <label htmlFor="razaoSocial">Razão Social: </label>
-            <input name="razaoSocial" type="text" value={this.props.entity.razaoSocial || ''} onChange={this.props.onChange} readOnly={!this.props.editable}></input>
+            <input name="razaoSocial" type="text" value={this.props.entity.razaoSocial || ''} onChange={this.props.onChange} readOnly={!this.props.editing}></input>
           </div>
           <div>
             <label htmlFor="unidade">Unidade: </label>
-            <input name="unidade" type="text" value={this.props.entity.unidade || ''} onChange={this.props.onChange} readOnly={!this.props.editable}></input>
+            <input name="unidade" type="text" value={this.props.entity.unidade || ''} onChange={this.props.onChange} readOnly={!this.props.editing}></input>
           </div>
           <div>
             <label htmlFor="cnpj">CNPJ: </label>
-            <input name="cnpj" type="text" value={this.props.entity.cnpj || ''} onChange={this.props.onChange} readOnly={!this.props.editable}></input>
+            <input name="cnpj" type="text" value={this.props.entity.cnpj || ''} onChange={this.props.onChange} readOnly={!this.props.editing}></input>
           </div>
           <div>
             <label htmlFor="inscricaoMunicipal">Inscrição Municipal: </label>
-            <input name="inscricaoMunicipal" type="text" value={this.props.entity.inscricaoMunicipal || ''} onChange={this.props.onChange} readOnly={!this.props.editable}></input>
+            <input name="inscricaoMunicipal" type="text" value={this.props.entity.inscricaoMunicipal || ''} onChange={this.props.onChange} readOnly={!this.props.editing}></input>
           </div>
           <div>
             <label htmlFor="inscricaoEstadual">Inscrição Estadual: </label>
-            <input name="inscricaoEstadual" type="text" value={this.props.entity.inscricaoEstadual || ''} onChange={this.props.onChange} readOnly={!this.props.editable}></input>
+            <input name="inscricaoEstadual" type="text" value={this.props.entity.inscricaoEstadual || ''} onChange={this.props.onChange} readOnly={!this.props.editing}></input>
           </div>
 
           <h2>Endereço</h2>

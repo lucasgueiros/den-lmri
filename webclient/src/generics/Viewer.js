@@ -7,19 +7,17 @@ class Viewer extends React.Component {
     super(props);
     this.state = {
       entity: {},
+      creating: false,
+      editing: false,
     }
-
-    //this.create = this.create.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    //this.save = this.save.bind(this);
-    //this.remove = this.remove.bind(this);
-    //this.cancel = this.cancel.bind(this);
-    //this.edit = this.edit.bind(this);
-    this.update = this.update.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   componentDidMount () {
-    this.update();
+    //if(this.props.url !== '') {
+      this.refresh();
+    //}
   }
 
   handleInputChange(event) {
@@ -34,13 +32,13 @@ class Viewer extends React.Component {
     this.setState({entity});
   }
 
-  update () {
+  refresh () {
     axios.get(this.props.url)
       .then( (response) => {
         this.setState({
           entity: response.data,
           creating: false,
-          editable: false,
+          editing: false,
         });
       }, (error) => {
         console.log(error);
@@ -53,7 +51,8 @@ class Viewer extends React.Component {
       <div className="Viewer">
         <Entity
           entity={this.state.entity}
-          editable={this.state.editable}
+          editing={this.props.editing}
+          creating={this.props.creating}
           onChange={this.handleInputChange}/>
       </div>
     );

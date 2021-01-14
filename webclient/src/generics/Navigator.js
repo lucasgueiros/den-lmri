@@ -10,7 +10,7 @@ class Navigator extends React.Component {
       entity_index: 0,
       entities_saved: [],
       entities_index_saved: [],
-      editable: false,
+      editing: false,
       creating: false,
     };
     this.next = this.next.bind(this);
@@ -21,7 +21,7 @@ class Navigator extends React.Component {
     this.remove = this.remove.bind(this);
     this.cancel = this.cancel.bind(this);
     this.edit = this.edit.bind(this);
-    this.update = this.update.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   handleInputChange(event) {
@@ -40,17 +40,17 @@ class Navigator extends React.Component {
   }
 
   componentDidMount () {
-    this.update();
+    this.refresh();
   }
 
-  update () {
+  refresh () {
     axios.get("/" + this.props.entityUrl + "/")
       .then( (response) => {
         if(response.data._embedded[this.props.entityUrl].length !== 0 ) {
           this.setState({
             entities: response.data._embedded[this.props.entityUrl],
             creating: false,
-            editable: false,
+            editing: false,
           });
         }
       }, (error) => {
@@ -64,7 +64,7 @@ class Navigator extends React.Component {
       axios.post(this.props.entityUrl, entityToSave)
         .then( (response) => {
           console.log(response);
-          this.update();
+          this.refresh();
         }, (error) => {
           console.log(error);
         });
@@ -73,7 +73,7 @@ class Navigator extends React.Component {
       axios.put(url, entityToSave)
         .then( (response) => {
           console.log(response);
-          this.update();
+          this.refresh();
         }, (error) => {
           console.log(error);
         });
@@ -85,7 +85,7 @@ class Navigator extends React.Component {
     axios.delete(url)
       .then( (response) => {
         console.log(response);
-        this.update();
+        this.refresh();
       }, (error) => {
         console.log(error);
       });
@@ -100,7 +100,7 @@ class Navigator extends React.Component {
     const entity_index_saved = this.state.entity_index.valueOf();
     this.setState({
       creating: true,
-      editable: true,
+      editing: true,
       entities_saved: entities_saved,
       entity_index: 0,
       entity_index_saved: entity_index_saved,
@@ -111,7 +111,7 @@ class Navigator extends React.Component {
   edit () {
     const entity = {...this.state.entities[this.state.entity_index]};
     this.setState({
-      editable: true,
+      editing: true,
       entity_saved: entity,
     });
   }
@@ -138,7 +138,7 @@ class Navigator extends React.Component {
       <div className="Navigator">
         <h1>{this.props.entityUrl}</h1>
         {message}
-        <Entity entity={this.state.entities[this.state.entity_index]} editable={this.state.editable} onChange={this.handleInputChange}/>
+        <Entity entity={this.state.entities[this.state.entity_index]} editing={this.state.editing} onChange={this.handleInputChange}/>
         <button onClick={this.prev} disabled={this.state.entity_index === 0}>Anterior</button>
         <button onClick={this.save}>Salvar</button>
         <button onClick={this.cancel}>Descartar</button>
