@@ -3,16 +3,19 @@ import React from 'react';
 import axios from 'axios';
 
 class Navigator extends React.Component {
+
+  state = {
+    entities: [{}],
+    entity_index: 0,
+    entities_saved: [],
+    entities_index_saved: [],
+    editing: false,
+    creating: false,
+  };
+
   constructor (props) {
     super(props);
-    this.state = {
-      entities: [{}],
-      entity_index: 0,
-      entities_saved: [],
-      entities_index_saved: [],
-      editing: false,
-      creating: false,
-    };
+
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
     this.create = this.create.bind(this);
@@ -21,7 +24,9 @@ class Navigator extends React.Component {
     this.remove = this.remove.bind(this);
     this.cancel = this.cancel.bind(this);
     this.edit = this.edit.bind(this);
-    this.refresh = this.refresh.bind(this);
+
+    this.setEntities = this.setEntities.bind(this);
+    this.renderButtons = this.renderButtons.bind(this);
   }
 
   handleInputChange(event) {
@@ -40,55 +45,17 @@ class Navigator extends React.Component {
   }
 
   componentDidMount () {
-    this.refresh();
+    this.props.crud.getOperation(this.setEntities, this.setEntities);
   }
 
-  refresh () {
-    axios.get("/" + this.props.entityUrl + "/")
-      .then( (response) => {
-        if(response.data._embedded[this.props.entityUrl].length !== 0 ) {
-          this.setState({
-            entities: response.data._embedded[this.props.entityUrl],
-            creating: false,
-            editing: false,
-          });
-        }
-      }, (error) => {
-        console.log(error);
+  setEntities(entities) {
+    if(entities.length !== 0 ) {
+      this.setState({
+        entities: entities,
+        creating: false,
+        editing: false,
       });
-  }
-
-  save () {
-    const entityToSave = { ...this.state.entities[this.state.entity_index]};
-    if(this.state.creating) {
-      axios.post(this.props.entityUrl, entityToSave)
-        .then( (response) => {
-          console.log(response);
-          this.refresh();
-        }, (error) => {
-          console.log(error);
-        });
-    } else {
-      const url = this.state.entities[this.state.entity_index]._links.self.href;
-      axios.put(url, entityToSave)
-        .then( (response) => {
-          console.log(response);
-          this.refresh();
-        }, (error) => {
-          console.log(error);
-        });
     }
-  }
-
-  remove () {
-    const url = this.state.entities[this.state.entity_index]._links.self.href;
-    axios.delete(url)
-      .then( (response) => {
-        console.log(response);
-        this.refresh();
-      }, (error) => {
-        console.log(error);
-      });
   }
 
   cancel() {
@@ -128,26 +95,47 @@ class Navigator extends React.Component {
     }
   }
 
+  renderButtons () {
+    return (
+      <>
+      <button onClick={this.prev} disabled={this.state.entity_index === 0}>Anterior</button>
+      <button onClick={this.save}>Salvar</button>
+      <button onClick={this.cancel}>Descartar</button>
+      <button onClick={this.remove}>Apagar</button>
+      <button onClick={this.create}>Novo</button>
+      <button onClick={this.edit}>Editar</button>
+      <button onClick={this.next} disabled={this.state.entity_index === this.state.entities.length - 1}>Próximo</button>
+      </>
+    );
+  }
+
   render () {
-    const Entity =  this.props.entityComponent;
-    let message = <p></p>;
-    if(this.state.entities.length === 0) {
-      message = <p>Nenhum {this.props.entityName} cadastrada</p>;
-    }
+    //{this.renderEntityRepresentation(this.state.entities[this.state.entity_index], this.state.editing)}
     return (
       <div className="Navigator">
-        <h1>{this.props.entityUrl}</h1>
-        {message}
-        <Entity entity={this.state.entities[this.state.entity_index]} editing={this.state.editing} onChange={this.handleInputChange}/>
-        <button onClick={this.prev} disabled={this.state.entity_index === 0}>Anterior</button>
-        <button onClick={this.save}>Salvar</button>
-        <button onClick={this.cancel}>Descartar</button>
-        <button onClick={this.remove}>Apagar</button>
-        <button onClick={this.create}>Novo</button>
-        <button onClick={this.edit}>Editar</button>
-        <button onClick={this.next} disabled={this.state.entity_index === this.state.entities.length - 1}>Próximo</button>
+        {React.cloneElement(this.props.children, {
+          entity: this.state.entities[this.state.entity_index],
+          editing: this.state.editing,
+          onChange: this.handleInputChange
+         })}
+        {this.renderButtons()}
       </div>
     );
+  }
+
+  save () {
+    const entityToSave = { ...this.state.entities[this.state.entity_index]};
+    if(this.state.creating) {
+      this.props.crud.postOperation(this.setEntities, entityToSave);
+    } else {
+      const url = this.state.entities[this.state.entity_index]._links.self.href;
+      this.props.crud.putOperation(this.setEntities, url, entityToSave);
+    }
+  }
+
+  remove() {
+    const url = this.state.entities[this.state.entity_index]._links.self.href;
+    this.props.crud.deleteOperation(this.setEntities, url);
   }
 
 }

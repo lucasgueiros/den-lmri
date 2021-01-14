@@ -6,18 +6,6 @@ import Endereco from '../enderecos/Endereco.js';
 class Cliente extends React.Component {
 
   render () {
-    let endereco = '';
-    if(this.props.entity._links) {
-      endereco = <Viewer
-        key={this.props.entity._links.endereco.href}
-        url={this.props.entity._links.endereco.href}
-        entityComponent={Endereco}
-        entityName="endereco"
-        editing={this.props.editing}
-        creating={this.props.creating} />;
-    }
-
-
     return (
       <div class-name="cliente">
         <form>
@@ -43,11 +31,12 @@ class Cliente extends React.Component {
           </div>
 
           <h2>Endereço</h2>
-          {endereco}
+
         </form>
       </div>
     );
     // Endereço e reponsavelTecnico
+    // <Endereco entity={this.props.entity.endereco} editing={this.props.editing} onChange={this.props.onChange}/>
   }
 }
 
